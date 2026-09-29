@@ -1,0 +1,3 @@
+flag,signatures,median_within_sig_cost_cv
+recall,211,0.787
+non_recall,36512,0.622

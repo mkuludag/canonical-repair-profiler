@@ -1,0 +1,2 @@
+Public basis: all dollar columns rescaled by the release constant; counts, hours,
+consensus/confidence and every ratio are identical to the internal v2 artifacts.

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "canonical-repair-profiler"
+version = "2.0.0"
+description = "Multi-agent pipeline that distills noisy warranty claims into clean, confidence-scored Canonical Repairs."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Research use only" }
+authors = [{ name = "Retro Encabulator team" }]
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "pyarrow>=12.0",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.7",
+    "plotly>=5.15",
+    "streamlit>=1.28",
+    "google-genai>=1.49",
+    "google-cloud-aiplatform>=1.110",
+    "google-cloud-bigquery>=3.11",
+    "google-cloud-bigquery-storage>=2.20",
+    "db-dtypes>=1.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-cov>=4.1"]
+
+[project.scripts]
+crp = "src.main:main"
+
+[tool.setuptools]
+py-modules = ["cli"]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["src"]

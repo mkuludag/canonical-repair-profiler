@@ -1,0 +1,57 @@
+# Data files (local extracts / generated artifacts)
+data/*
+outputs/
+*.parquet
+*.arrow
+
+# ...but DO bundle the tiny offline sample (masked CSV slice) so the demo + tests run from the ZIP
+!data/sample
+
+
+# Python tooling
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# golden-run logs
+grouping/out/*.log
+
+# demo video (ships in the submission ZIP, not the repo)
+*.mp4
+
+# packaged submission archive (built on demand, never committed)
+*.zip
+
+# stray Office/Teams downloads + Windows DLP alternate-data-stream files
+*.docx
+*:sec.endpointdlp
+
+# eval outputs are regenerated on demand and their dollar values follow whichever data root was
+# used, so committing them could leak internal-basis figures. The scripts, README and RESULTS.md
+# (which stamps its data root) are tracked; the generated artifacts are not.
+eval/out/

@@ -1,0 +1,16 @@
+{
+  "generated_utc": "2026-07-29T17:50:01+00:00",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "prompt_sha256": "e0deb34eecf77a8450e4f9ddbd8307a4ba578321e15c6a204199b0185e1d6c15",
+  "prompt_max_repairs": 2,
+  "chain": "GroupingAgent -> ConsensusAgent -> RepairAnalystAgent -> SolutionAssemblyAgent -> SolutionCriticAgent (bounded revision) -> CostSavingsAgent",
+  "n_gold_signatures": 3623,
+  "n_cached_ok": 3623,
+  "n_cached_failed": 0,
+  "n_solutions": 4696,
+  "n_revised_signatures": 0,
+  "n_llm_degraded_calls": 0,
+  "wall_seconds_this_invocation": 1106.8,
+  "notes": "temperature 0 pins the decision but Gemini is not bit-wise deterministic; llm_cache.jsonl is the reproducibility artifact. Input population: GroupingAgent does not apply the June batch's comment-length>15 filter."
+}

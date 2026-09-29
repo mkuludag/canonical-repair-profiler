@@ -1,0 +1,46 @@
+You are the ENTIRE warranty canonicalization pipeline in one step. You are given a GROUP of similar
+Ford warranty claims (same vehicle line, same causal part, same symptom theme). Produce the group's
+final Canonical Repair record(s) end to end — structure, prose, statistics, and a confidence score —
+with no other tools, statistics engines, or reviewers involved.
+
+1) Decide how many DISTINCT repairs this group actually contains: 1 or 2 (never more than 2).
+Default to ONE repair. Split into 2 ONLY if the claims clearly describe two different repair
+SCOPES for the same part — e.g. a minor repair/reseal vs a full component REPLACEMENT — AND that
+scope difference is visible in BOTH a bimodal cost spread AND a meaningful labor-hours difference.
+Do NOT split when the cost varies on a smooth/continuous gradient with similar labor hours (that is
+one repair with normal price variation, not two repairs). Do not split on trivial wording differences.
+
+2) For EACH distinct repair, write:
+   - unified_diagnosis: one clear sentence a dealer would SELECT FROM A DROPDOWN at claim filing,
+     stating the customer concern + the cause (what is wrong and why). Generic enough to represent
+     every claim of that repair, specific enough to be unambiguous.
+   - suggested_correction: one or two sentences stating the correct fix (the action + key parts).
+   - cost_tier: which cost band this repair maps to: "all" if only one repair, else "low" / "high".
+     Lower-cost = the minor repair, higher-cost = the full replacement.
+   - typical_parts: short phrase naming the main part(s), or "" if unknown.
+
+3) For EACH distinct repair, estimate its statistics over ALL claims of that repair in the group
+(not only the sample shown):
+   - est_cost_med: the median approved cost in US dollars.
+   - est_cost_q25 and est_cost_q75: the 25th/75th-percentile approved costs (the IQR band).
+   - est_labor_med_hrs: the median labor hours.
+   - confidence_0_1: your own score in [0,1] that this record is accurate enough for a dealer to
+     rely on at claim filing.
+Additionally estimate est_group_cost_med: the median approved cost of the WHOLE group, regardless
+of any split. The sample below is evenly spaced across the group's claims sorted by cost, so it
+spans the full cost range; combine it with your domain knowledge of these repairs. Every estimate
+must be a plain JSON number (no strings, no "$", no ranges).
+
+Return STRICT JSON only (n_repairs is 1 or 2):
+{"n_repairs": <int>, "split_rationale": "<short>", "est_group_cost_med": <number>,
+ "repairs": [ {"name":"...","cost_tier":"...","unified_diagnosis":"...",
+ "suggested_correction":"...","typical_parts":"...","est_cost_med":<number>,
+ "est_cost_q25":<number>,"est_cost_q75":<number>,"est_labor_med_hrs":<number>,
+ "confidence_0_1":<number>} ]}
+
+GROUP CONTEXT:
+%(context)s
+
+SAMPLE CLAIM COMMENTS (each prefixed with its approved cost; evenly spaced across the group's
+claims sorted by cost, so the sample spans the full cost range):
+%(comments)s

@@ -1,0 +1,4 @@
+grouping,keys,n_groups,pct_singletons,median_size,pct_claims_in_grp_ge5,median_gt_score_ge5,"gold_groups(n>=10,score>=.6)","hotspots(n>=20,score<=.4)"
+G1_code_vehicle,gsar_veh_line_desc+paws_causal_part,26943,42.0,2,95.2,0.413,262,1858
+G2_code_veh_subcat,gsar_veh_line_desc+paws_causal_part+rep_sub_cat_label,78995,59.2,1,84.9,0.458,662,1583
+G3_code_veh_archetype,gsar_veh_line_desc+paws_causal_part+arch,71957,56.6,1,83.7,0.625,3619,6

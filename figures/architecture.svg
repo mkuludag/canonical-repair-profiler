@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="1060" viewBox="0 0 1660 1060" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrowRose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e11d48"/>
+    </marker>
+  </defs>
+
+  <rect width="1660" height="1060" fill="#ffffff"/>
+
+  <!-- ======================= TITLE ======================= -->
+  <text x="830" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a">Canonical Repair Profiler — Agentic Architecture</text>
+  <text x="830" y="68" text-anchor="middle" font-size="13.5" fill="#475569">Seven single-responsibility agents hand one shared RepairContext down a self-correcting chain, backed by a tool layer — numbers are deterministic, only prose is LLM-generated</text>
+
+  <!-- ======================= DATA BAND ======================= -->
+  <rect x="36" y="92" width="1588" height="120" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="52" y="112" font-size="10.5" letter-spacing="1.6" font-weight="700" fill="#64748b">DATA — 50 YEARS OF FORD WARRANTY CLAIMS</text>
+
+  <!-- source cylinders -->
+  <rect x="54" y="118" width="434" height="88" rx="8" fill="none" stroke="#cbd5e1" stroke-dasharray="4 3"/>
+  <g>
+    <path d="M70,140 v44 a58,7 0 0 0 116,0 v-44" fill="#e2e8f0" stroke="#64748b" stroke-width="1.2"/>
+    <ellipse cx="128" cy="140" rx="58" ry="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.2"/>
+    <text x="128" y="166" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">PAWS</text>
+    <text x="128" y="180" text-anchor="middle" font-size="9.5" fill="#64748b">prior-approval</text>
+  </g>
+  <g>
+    <path d="M214,140 v44 a58,7 0 0 0 116,0 v-44" fill="#e2e8f0" stroke="#64748b" stroke-width="1.2"/>
+    <ellipse cx="272" cy="140" rx="58" ry="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.2"/>
+    <text x="272" y="166" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">GSAR</text>
+    <text x="272" y="180" text-anchor="middle" font-size="9.5" fill="#64748b">cost + classification</text>
+  </g>
+  <g>
+    <path d="M358,140 v44 a58,7 0 0 0 116,0 v-44" fill="#e2e8f0" stroke="#64748b" stroke-width="1.2"/>
+    <ellipse cx="416" cy="140" rx="58" ry="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.2"/>
+    <text x="416" y="166" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">OWS</text>
+    <text x="416" y="180" text-anchor="middle" font-size="9.5" fill="#64748b">NA claims</text>
+  </g>
+
+  <line x1="492" y1="162" x2="520" y2="162" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <!-- unify -->
+  <rect x="526" y="126" width="356" height="72" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="1.3"/>
+  <text x="704" y="152" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">Unify — cross-system data build</text>
+  <text x="704" y="170" text-anchor="middle" font-size="10" fill="#64748b">cross-system join on masked VIN + repair date</text>
+
+  <line x1="886" y1="162" x2="912" y2="162" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <!-- unified dataset -->
+  <rect x="918" y="126" width="368" height="72" rx="36" fill="#e2e8f0" stroke="#475569" stroke-width="1.3"/>
+  <text x="1102" y="152" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, monospace" fill="#1e293b">repair_profile — 938,307 × 112</text>
+  <text x="1102" y="170" text-anchor="middle" font-size="10" fill="#475569">unified repair-line dataset (PAWS + GSAR + OWS)</text>
+
+  <!-- scale note -->
+  <rect x="1330" y="126" width="290" height="72" rx="8" fill="none" stroke="#94a3b8" stroke-dasharray="5 3"/>
+  <text x="1475" y="155" text-anchor="middle" font-size="10.5" fill="#475569">Scales unchanged:</text>
+  <text x="1475" y="172" text-anchor="middle" font-size="10.5" font-weight="600" fill="#334155">940k PAWS claims → ~88M claims (50 yrs)</text>
+
+  <!-- elbow into agents -->
+  <path d="M1102,198 V224 H153 V288" fill="none" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="640" y="219" text-anchor="middle" font-size="10.5" fill="#475569">member claims per Repair Signature — 71,957 signatures (vehicle line × causal part × symptom archetype)</text>
+
+  <!-- ======================= AGENTS BAND ======================= -->
+  <rect x="36" y="246" width="1588" height="210" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="52" y="268" font-size="10.5" letter-spacing="1.6" font-weight="700" fill="#1d4ed8">SRC/AGENTS — SEVEN-AGENT HAND-OFF CHAIN + SELF-CORRECTING QA LOOP</text>
+  <text x="1608" y="268" text-anchor="end" font-size="10.5" fill="#3b82f6">Orchestrator — run_one(signature, state) live · run_batch() concurrent + resumable</text>
+
+  <!-- agent 1 -->
+  <rect x="51" y="296" width="204" height="118" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="153" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">GroupingAgent</text>
+  <text x="153" y="340" text-anchor="middle" font-size="10.3" fill="#1e40af">defines the Repair Signature;</text>
+  <text x="153" y="355" text-anchor="middle" font-size="10.3" fill="#1e40af">gathers its member claims</text>
+  <rect x="83" y="380" width="140" height="20" rx="10" fill="#0f172a"/>
+  <text x="153" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#e2e8f0">writes ctx.claims</text>
+
+  <line x1="255" y1="355" x2="269" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- agent 2 -->
+  <rect x="273" y="296" width="204" height="118" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="375" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">ConsensusAgent</text>
+  <text x="375" y="340" text-anchor="middle" font-size="10.3" fill="#1e40af">deterministic cost / labor</text>
+  <text x="375" y="355" text-anchor="middle" font-size="10.3" fill="#1e40af">consensus + IQR bands</text>
+  <rect x="297" y="380" width="156" height="20" rx="10" fill="#0f172a"/>
+  <text x="375" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#e2e8f0">writes ctx.consensus</text>
+
+  <line x1="477" y1="355" x2="491" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- agent 3 (LLM) -->
+  <rect x="495" y="296" width="204" height="118" rx="9" fill="#ffedd5" stroke="#ea580c" stroke-width="1.6"/>
+  <rect x="649" y="287" width="44" height="18" rx="9" fill="#ea580c"/>
+  <text x="671" y="300" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">LLM</text>
+  <text x="597" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#9a3412">RepairAnalystAgent</text>
+  <text x="597" y="340" text-anchor="middle" font-size="10.3" fill="#9a3412">Vertex Gemini: split decision +</text>
+  <text x="597" y="355" text-anchor="middle" font-size="10.3" fill="#9a3412">unified diagnosis + correction</text>
+  <text x="597" y="370" text-anchor="middle" font-size="9.2" font-family="Consolas, monospace" fill="#c2410c">structured prompt · strict JSON</text>
+  <rect x="513" y="380" width="168" height="20" rx="10" fill="#431407"/>
+  <text x="597" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#fed7aa">writes ctx.llm_decision</text>
+
+  <line x1="699" y1="355" x2="713" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- agent 4 -->
+  <rect x="717" y="296" width="204" height="118" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="819" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">SolutionAssemblyAgent</text>
+  <text x="819" y="340" text-anchor="middle" font-size="10.3" fill="#1e40af">fuses LLM text + tier numbers;</text>
+  <text x="819" y="355" text-anchor="middle" font-size="10.3" fill="#1e40af">guard rejects weak splits</text>
+  <rect x="743" y="380" width="152" height="20" rx="10" fill="#0f172a"/>
+  <text x="819" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#e2e8f0">writes ctx.solutions</text>
+
+  <line x1="921" y1="355" x2="935" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- agent 5 (critic, QA loop) -->
+  <rect x="939" y="296" width="204" height="118" rx="9" fill="#ffe4e6" stroke="#e11d48" stroke-width="1.6"/>
+  <text x="1041" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#9f1239">SolutionCriticAgent</text>
+  <text x="1041" y="340" text-anchor="middle" font-size="10.3" fill="#be123c">QA gate on every solution:</text>
+  <text x="1041" y="355" text-anchor="middle" font-size="10.3" fill="#be123c">PASS / FLAG / FAIL verdict</text>
+  <text x="1041" y="370" text-anchor="middle" font-size="9.2" font-family="Consolas, monospace" fill="#be123c">FAIL clears the usable flag</text>
+  <rect x="967" y="380" width="148" height="20" rx="10" fill="#4c0519"/>
+  <text x="1041" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#fecdd3">writes ctx.critique</text>
+
+  <line x1="1143" y1="355" x2="1157" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- feedback loop: critic -> analyst (bounded) -->
+  <path d="M1041,296 V274 H601 V290" fill="none" stroke="#e11d48" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrowRose)"/>
+  <text x="843" y="268" text-anchor="middle" font-size="9.8" font-weight="600" fill="#be123c">revision request — text defects only, bounded to ONE round</text>
+
+  <!-- agent 6 -->
+  <rect x="1161" y="296" width="204" height="118" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="1263" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">CostSavingsAgent</text>
+  <text x="1263" y="340" text-anchor="middle" font-size="10.3" fill="#1e40af">avoidable overspend vs consensus</text>
+  <text x="1263" y="355" text-anchor="middle" font-size="10.3" fill="#1e40af">(grounded $, per solution)</text>
+  <rect x="1185" y="380" width="156" height="20" rx="10" fill="#0f172a"/>
+  <text x="1263" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#e2e8f0">writes savings fields</text>
+
+  <line x1="1365" y1="355" x2="1379" y2="355" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- agent 7 -->
+  <rect x="1383" y="296" width="204" height="118" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="1485" y="320" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">RegionDelegatorAgent</text>
+  <text x="1485" y="340" text-anchor="middle" font-size="10.3" fill="#1e40af">localizes cost to dealer's state</text>
+  <text x="1485" y="355" text-anchor="middle" font-size="10.3" fill="#1e40af">(1.67× US state spread)</text>
+  <rect x="1415" y="380" width="140" height="20" rx="10" fill="#0f172a"/>
+  <text x="1485" y="394" text-anchor="middle" font-size="10" font-family="Consolas, monospace" fill="#e2e8f0">writes ctx.region</text>
+
+  <!-- ticks to context bus -->
+  <line x1="153"  y1="418" x2="153"  y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="375"  y1="418" x2="375"  y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="597"  y1="418" x2="597"  y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="819"  y1="418" x2="819"  y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="1041" y1="418" x2="1041" y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="1263" y1="418" x2="1263" y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+  <line x1="1485" y1="418" x2="1485" y2="466" stroke="#d97706" stroke-width="2" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
+
+  <!-- ======================= CONTEXT BUS ======================= -->
+  <rect x="51" y="470" width="1558" height="48" rx="24" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="830" y="490" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">RepairContext — shared blackboard</text>
+  <text x="830" y="506" text-anchor="middle" font-size="10.5" fill="#b45309">each agent reads upstream fields and writes its own — the same object is handed off, never re-derived</text>
+
+  <!-- arrow bus -> library -->
+  <line x1="260" y1="518" x2="260" y2="580" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <!-- ======================= OUTPUT BAND ======================= -->
+  <rect x="36" y="540" width="1588" height="220" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="52" y="562" font-size="10.5" letter-spacing="1.6" font-weight="700" fill="#64748b">OUTPUT — ONE LIBRARY, TWO BUSINESS OUTCOMES + THE PRODUCT INFERENCE PATH</text>
+
+  <!-- library -->
+  <rect x="60" y="584" width="400" height="150" rx="9" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="260" y="630" text-anchor="middle" font-size="15" font-weight="700" fill="#5b21b6">Canonical Repair Library</text>
+  <text x="260" y="656" text-anchor="middle" font-size="10.8" fill="#6d28d9">6,654 canonical repairs (3,623 GOLD) · 5,070 golden solutions</text>
+  <text x="260" y="674" text-anchor="middle" font-size="10.8" fill="#6d28d9">diagnosis · correction · labor · cost · parts · confidence</text>
+
+  <!-- consumers -->
+  <line x1="460" y1="620" x2="554" y2="604" stroke="#475569" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <line x1="460" y1="658" x2="554" y2="658" stroke="#475569" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <line x1="460" y1="696" x2="554" y2="712" stroke="#475569" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <rect x="560" y="580" width="340" height="48" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="730" y="600" text-anchor="middle" font-size="12" font-weight="700" fill="#4c1d95">Parts &amp; labor prediction AI</text>
+  <text x="730" y="617" text-anchor="middle" font-size="10" fill="#6d28d9">trains on consensus ground-truth labels</text>
+
+  <rect x="560" y="634" width="340" height="48" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="730" y="654" text-anchor="middle" font-size="12" font-weight="700" fill="#4c1d95">Claim adjudication AI</text>
+  <text x="730" y="671" text-anchor="middle" font-size="10" fill="#6d28d9">outlier-based, defensible claim adjudication</text>
+
+  <rect x="560" y="688" width="340" height="48" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="730" y="708" text-anchor="middle" font-size="12" font-weight="700" fill="#4c1d95">Dealer diagnosis dropdown</text>
+  <text x="730" y="725" text-anchor="middle" font-size="10" fill="#6d28d9">keeps future claims clean at the point of filing</text>
+
+  <!-- inference path -->
+  <text x="980" y="576" font-size="10" letter-spacing="1.4" font-weight="700" fill="#64748b">INFERENCE — THE PRODUCT PATH</text>
+  <rect x="980" y="592" width="190" height="86" rx="12" fill="#f1f5f9" stroke="#64748b" stroke-width="1.2"/>
+  <text x="1075" y="624" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">Incoming claim</text>
+  <text x="1075" y="642" text-anchor="middle" font-size="10" fill="#64748b">vehicle · causal part · concern</text>
+  <text x="1075" y="658" text-anchor="middle" font-size="10" fill="#64748b">(new, unlabeled)</text>
+
+  <line x1="1170" y1="635" x2="1192" y2="635" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <rect x="1196" y="592" width="240" height="86" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="1316" y="616" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">ClaimMatchAgent</text>
+  <text x="1316" y="634" text-anchor="middle" font-size="10.3" fill="#1e40af">retrieves candidate repairs; Gemini</text>
+  <text x="1316" y="648" text-anchor="middle" font-size="10.3" fill="#1e40af">match only if &gt;1 plausible candidate</text>
+  <text x="1316" y="666" text-anchor="middle" font-size="9.3" font-family="Consolas, monospace" fill="#1d4ed8">retrieval first · LLM only to disambiguate</text>
+
+  <line x1="1436" y1="635" x2="1458" y2="635" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <rect x="1462" y="592" width="158" height="86" rx="12" fill="#f1f5f9" stroke="#64748b" stroke-width="1.2"/>
+  <text x="1541" y="620" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">Golden solution</text>
+  <text x="1541" y="638" text-anchor="middle" font-size="10" fill="#64748b">or NO_MATCH →</text>
+  <text x="1541" y="654" text-anchor="middle" font-size="10" fill="#64748b">manual review</text>
+  <text x="1541" y="670" text-anchor="middle" font-size="10" fill="#64748b">(never invents a repair)</text>
+
+  <!-- dashed: library feeds inference -->
+  <path d="M260,734 V748 H1316 V684" fill="none" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrowPurple)"/>
+  <text x="760" y="744" text-anchor="middle" font-size="10" fill="#7c3aed">candidate Canonical Repairs (the library is the retrieval index)</text>
+
+  <!-- ======================= TOOLS BAND ======================= -->
+  <rect x="36" y="782" width="1588" height="190" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="52" y="804" font-size="10.5" letter-spacing="1.6" font-weight="700" fill="#047857">SRC/TOOLS — THE TOOL LAYER (AGENTS SELECT TOOLS; NEVER CALL APIS DIRECTLY)</text>
+  <text x="1608" y="804" text-anchor="end" font-size="10.5" fill="#059669">every external call: 60s timeout · retry/back-off · auth refresh · graceful fallback</text>
+
+  <rect x="52" y="820" width="296" height="128" rx="9" fill="#d1fae5" stroke="#059669" stroke-width="1.3"/>
+  <text x="200" y="844" text-anchor="middle" font-size="13" font-weight="700" fill="#064e3b">DataStore</text>
+  <text x="200" y="864" text-anchor="middle" font-size="10.3" fill="#065f46">Parquet / CSV artifacts +</text>
+  <text x="200" y="879" text-anchor="middle" font-size="10.3" fill="#065f46">resumable JSONL cache — a 3,600-call</text>
+  <text x="200" y="894" text-anchor="middle" font-size="10.3" fill="#065f46">batch resumes, never restarts</text>
+  <rect x="86" y="908" width="228" height="20" rx="10" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="200" y="922" text-anchor="middle" font-size="9.8" font-family="Consolas, monospace" fill="#047857">GroupingAgent · run_batch()</text>
+
+  <rect x="367" y="820" width="296" height="128" rx="9" fill="#d1fae5" stroke="#059669" stroke-width="1.3"/>
+  <text x="515" y="844" text-anchor="middle" font-size="13" font-weight="700" fill="#064e3b">StatsTool</text>
+  <text x="515" y="864" text-anchor="middle" font-size="10.3" fill="#065f46">consensus fraction · IQR bands ·</text>
+  <text x="515" y="879" text-anchor="middle" font-size="10.3" fill="#065f46">cost-tier partition · confidence —</text>
+  <text x="515" y="894" text-anchor="middle" font-size="10.3" fill="#065f46">all numbers, deterministic</text>
+  <rect x="385" y="908" width="260" height="20" rx="10" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="515" y="922" text-anchor="middle" font-size="9.8" font-family="Consolas, monospace" fill="#047857">Consensus · Assembly · CostSavings</text>
+
+  <rect x="682" y="820" width="296" height="128" rx="9" fill="#d1fae5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="830" y="844" text-anchor="middle" font-size="13" font-weight="700" fill="#064e3b">VertexGeminiTool</text>
+  <text x="830" y="864" text-anchor="middle" font-size="10.3" fill="#065f46">Vertex AI Gemini (gemini-2.5-flash):</text>
+  <text x="830" y="879" text-anchor="middle" font-size="10.3" fill="#065f46">token auto-refresh · 60s timeout ·</text>
+  <text x="830" y="894" text-anchor="middle" font-size="10.3" fill="#065f46">retry/back-off · strict-JSON parsing</text>
+  <rect x="716" y="908" width="228" height="20" rx="10" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="830" y="922" text-anchor="middle" font-size="9.8" font-family="Consolas, monospace" fill="#047857">RepairAnalyst · ClaimMatch</text>
+
+  <rect x="997" y="820" width="296" height="128" rx="9" fill="#d1fae5" stroke="#059669" stroke-width="1.3"/>
+  <text x="1145" y="844" text-anchor="middle" font-size="13" font-weight="700" fill="#064e3b">BigQueryTool</text>
+  <text x="1145" y="864" text-anchor="middle" font-size="10.3" fill="#065f46">Ford warranty reads: fresh gcloud</text>
+  <text x="1145" y="879" text-anchor="middle" font-size="10.3" fill="#065f46">user tokens (CAA blocks ADC) ·</text>
+  <text x="1145" y="894" text-anchor="middle" font-size="10.3" fill="#065f46">retries · Decimal→float coercion</text>
+  <rect x="1031" y="908" width="228" height="20" rx="10" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="1145" y="922" text-anchor="middle" font-size="9.8" font-family="Consolas, monospace" fill="#047857">data build · region study</text>
+
+  <rect x="1312" y="820" width="296" height="128" rx="9" fill="#d1fae5" stroke="#059669" stroke-width="1.3"/>
+  <text x="1460" y="844" text-anchor="middle" font-size="13" font-weight="700" fill="#064e3b">RegionIndexTool</text>
+  <text x="1460" y="864" text-anchor="middle" font-size="10.3" fill="#065f46">deterministic per-state cost index</text>
+  <text x="1460" y="879" text-anchor="middle" font-size="10.3" fill="#065f46">(1.67× spread, ~10.6M GSAR claims) ·</text>
+  <text x="1460" y="894" text-anchor="middle" font-size="10.3" fill="#065f46">degrades to a neutral 1.0× fallback</text>
+  <rect x="1346" y="908" width="228" height="20" rx="10" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="1460" y="922" text-anchor="middle" font-size="9.8" font-family="Consolas, monospace" fill="#047857">RegionDelegatorAgent</text>
+
+  <!-- ======================= FOOTER BADGES ======================= -->
+  <rect x="52" y="994" width="496" height="40" rx="20" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="300" y="1019" text-anchor="middle" font-size="11.5" font-weight="600" fill="#166534">✓ 99 offline tests (96% coverage) + CI — every cloud call mocked</text>
+
+  <rect x="572" y="994" width="496" height="40" rx="20" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="820" y="1019" text-anchor="middle" font-size="11.5" font-weight="600" fill="#166534">✓ ran at scale — 3,623/3,623 LLM calls completed (transient failures retried)</text>
+
+  <rect x="1092" y="994" width="496" height="40" rx="20" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="1340" y="1019" text-anchor="middle" font-size="11.5" font-weight="600" fill="#166534">✓ auditable — numbers are deterministic; the LLM writes prose only</text>
+</svg>

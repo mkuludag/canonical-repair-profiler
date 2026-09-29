@@ -1,0 +1,290 @@
+================================================================================
+INPUTS / OUTPUTS - exact, runnable examples for Canonical Repair Profiler (CRP)
+
+The submission video runs these LIVE via the dashboard (app.py):
+  - Tab "Claim Assistant": F-150 -> part 6148 executes EXAMPLE 4 (incoming-claim inference),
+    with an optional dealer-state selector that executes EXAMPLE 5 (regional localization).
+  - Tab "Agent Pipeline": "Super Duty Oil Pan" executes EXAMPLE 2 (the reseal-vs-replace split),
+    "F-150 Engine Long Block" executes EXAMPLE 1 (single repair).
+
+  - Segment E (error handling): EXAMPLE 12 (no-match -> manual review) runs live in the dashboard;
+    EXAMPLES 13-15 demonstrate region fallback, API retry/timeout, and the LLM over-split guard.
+
+Every example is also runnable from the CLI below. EXAMPLE 0 and EXAMPLES 12-15 run with NO cloud.
+================================================================================
+
+--------------------------------------------------------------------------------
+EXAMPLE 0  (OFFLINE - NO CLOUD) - inference against the bundled sample
+--------------------------------------------------------------------------------
+COMMAND (input):
+    make demo
+    # equivalently:
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "F-150" --part 6148 \
+        --concern "engine knock on cold start, heavy oil consumption, misfire on cyl 1 and 4"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Long Block Engine Replacement
+      UNIFIED DIAGNOSIS: ... excessive oil consumption, engine noise, rough running ...
+      SUGGESTED CORRECTION: Replace the complete long block engine assembly ...
+      LABOR (median) : 16.8 hrs
+      COST  (median) : $8923.13   (IQR $7835.16-$10378.93)
+      TYPICAL PARTS  : Long block engine assembly
+      CONFIDENCE     : 0.779  | from 961 historical claims
+
+--------------------------------------------------------------------------------
+EXAMPLE 1  (LIVE DEMO) - produce a Canonical Repair for one repair signature
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python cli.py run --signature 32954        # (or: python -m src.agents.orchestrator --signature 32954)
+
+WHAT HAPPENS (agent hand-off chain, all live):
+    GroupingAgent      -> loads signature 32954 (P552N F-150 [15-20], causal part 6148) + 961 claims
+    ConsensusAgent     -> cost/labor consensus + IQR bands (deterministic)
+    RepairAnalystAgent -> Vertex AI Gemini decides #repairs + writes diagnosis + correction
+    SolutionAssemblyAgent -> fuses LLM text with per-tier numbers -> golden solution
+    SolutionCriticAgent -> QA gate: PASS/FLAG/FAIL verdict; text defects go BACK to the
+                           RepairAnalystAgent for one bounded revision round
+    CostSavingsAgent   -> adds avoidable-overspend vs consensus
+
+OUTPUT (observed; LLM prose varies slightly run-to-run, fields are fixed):
+    [
+      {
+        "signature_id": 32954, "vehicle_line": "P552N F-150 [15-20]", "causal_part": "6148",
+        "n_repairs_detected": 1, "repair_name": "Long Block Engine Replacement", "cost_tier": "all",
+        "unified_diagnosis": "Excessive oil consumption, engine noise/rough running due to internal wear.",
+        "suggested_correction": "Replace the engine long block assembly to restore function.",
+        "typical_parts": "Engine long block assembly",
+        "labor_med_hrs": 16.8, "cost_med": 8923.13, "cost_q25": 7835.16, "cost_q75": 10378.93,
+        "consensus": 0.779, "support": 961, "confidence": 0.779,
+        "savings_per_claim": 1005.62, "savings_pct_claims_above": 50.0, "usable": true,
+        "critic_verdict": "PASS"
+      }
+    ]
+
+--------------------------------------------------------------------------------
+EXAMPLE 2  (LLM SPLIT DECISION) - a group that can split into two distinct repairs
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python cli.py run --signature 40109
+
+INPUT GROUP: P558N SUPER DUTY [17-22], causal part 6675 (oil pan); one symptom theme but two
+            candidate scopes (a reseal vs a full pan/seal replacement). The RepairAnalystAgent
+            proposes a split; the SolutionAssemblyAgent's separation guard honors it only if the
+            high cost tier is >=1.5x the low tier (otherwise it collapses to one repair).
+
+OUTPUT (when bimodal -> two Canonical Repairs, each scored on its own consensus):
+    n_repairs=2, solutions=2
+    [ { "cost_tier": "low",  "repair_name": "Upper Oil Pan Reseal",       "cost_med": 1537.37, ... },
+      { "cost_tier": "high", "repair_name": "Upper Oil Pan Replacement",  "cost_med": 2600.76, ... } ]
+
+--------------------------------------------------------------------------------
+EXAMPLE 3  (BATCH) - emit the full Canonical Repair Library
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python grouping/10_golden_solutions.py
+
+OUTPUT (artifact): grouping/out/golden_solutions.csv
+    5,070 golden-solution rows over 3,623 GOLD signatures (2,176 single-repair, 2,894 two-repair; 5,069/5,070 cost-backed/usable, ~100%)
+    Columns: signature_id, vehicle_line, causal_part, n_repairs_detected, repair_name, cost_tier,
+             tier_n_claims, split_rationale, unified_diagnosis, suggested_correction, typical_parts,
+             labor_med_hrs, cost_med, cost_q25, cost_q75, consensus, support, confidence, usable
+
+--------------------------------------------------------------------------------
+EXAMPLE 4  (LIVE DEMO - PRODUCT / INFERENCE) - route an INCOMING claim to its solution
+--------------------------------------------------------------------------------
+The claim-adjudication / dealer "unified-diagnosis-dropdown" use case: a new claim arrives; the
+ClaimMatchAgent retrieves the candidate Canonical Repairs for that vehicle + causal part and (via
+Vertex Gemini) selects the best match, returning its golden solution.
+
+COMMAND (input):
+    python cli.py infer --vehicle "F-150" --part 6256 \
+        --concern "cam phaser rattle on startup, then progressed to misfire and metal in oil"
+
+OUTPUT (observed): the agent chooses among the 2 candidates (VCT Phaser Replacement vs Long Block
+Engine Replacement) and returns the better fit for "progressed to metal in oil":
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 0.9  | why: symptoms indicate progression to internal engine damage
+      REPAIR        : Long Block Engine Replacement
+      LABOR (median) : 13.2 hrs    COST (median): $2464.74   (consensus-scored, support 5087)
+
+--------------------------------------------------------------------------------
+EXAMPLE 5  (REGION LOCALIZATION) - localize a canonical cost to a dealer's state
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python cli.py run --signature 32954 --state CA
+
+OUTPUT (the RegionDelegatorAgent adds region-localized cost via the deterministic RegionIndexTool):
+    ... "cost_med": 8923.13, "region_state": "CA", "region_cost_index": 1.127,
+        "cost_med_regional": 10054.58, "region_note": "CA runs 13% above the national average ..."
+    (national cost spread across states is ~1.67x; CA ~1.13x, WY ~0.82x)
+
+--------------------------------------------------------------------------------
+EXAMPLE 6  (BUSINESS VALUE) - bottom-up avoidable overspend
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python grouping/12_group_savings.py
+
+OUTPUT (artifact + headline): grouping/out/group_savings.csv, group_savings_headline.txt
+    2,172 single-repair canonical repairs (those with a usable consensus cost) / 127,465 claims
+    total historical spend  : $406.3M
+    avoidable overspend     : $75.7M  (18.6% of spend above consensus, ~$594/claim)
+
+--------------------------------------------------------------------------------
+EXAMPLE 7  (OFFLINE - NO CLOUD) - Explorer water pump repair
+--------------------------------------------------------------------------------
+COMMAND (input):
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "EXPLORER" --part 8501 \
+        --concern "coolant leak and low coolant level from water pump"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Water Pump Replacement
+      UNIFIED DIAGNOSIS: coolant leak or low coolant level from the water pump
+      SUGGESTED CORRECTION: replace the faulty water pump and associated components
+      LABOR (median) : 9.5 hrs
+      COST  (median) : $1631.44   (IQR $1364.02-$2060.44)
+      TYPICAL PARTS  : Water pump (DG1Z8501D), gaskets, coolant
+      CONFIDENCE     : 0.697  | from 5419 historical claims
+
+--------------------------------------------------------------------------------
+EXAMPLE 8  (OFFLINE - NO CLOUD) - Focus clutch system repair
+--------------------------------------------------------------------------------
+COMMAND (input):
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "FOCUS" --part 7B546 \
+        --concern "transmission shudder harsh shifts and clutch slipping"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Clutch System Repair/Replacement
+      UNIFIED DIAGNOSIS: transmission shudder, harsh shifts, or slipping due to clutch failure
+      SUGGESTED CORRECTION: diagnose and replace clutch assembly or major clutch components
+      LABOR (median) : 6.7 hrs
+      COST  (median) : $1510.58   (IQR $1240.12-$1904.30)
+      TYPICAL PARTS  : clutch assembly, clutch release bearing/fork, clutch actuator
+      CONFIDENCE     : 0.659  | from 2077 historical claims
+
+--------------------------------------------------------------------------------
+EXAMPLE 9  (OFFLINE - NO CLOUD) - Transit Connect transmission repair
+--------------------------------------------------------------------------------
+COMMAND (input):
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "TRANSIT CONNECT" --part 7N473 \
+        --concern "vehicle will not move wrench light transmission failure"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Transmission Assembly Replacement
+      UNIFIED DIAGNOSIS: severe transmission failure; vehicle not moving / wrench light
+      SUGGESTED CORRECTION: replace the automatic transmission assembly and associated components
+      LABOR (median) : 17.5 hrs
+      COST  (median) : $3353.08   (IQR $2821.11-$4032.94)
+      TYPICAL PARTS  : Automatic transmission assembly, transmission cooler, transmission fluid
+      CONFIDENCE     : 0.75  | from 172 historical claims
+
+--------------------------------------------------------------------------------
+EXAMPLE 10  (OFFLINE - NO CLOUD) - Edge engine long block repair
+--------------------------------------------------------------------------------
+COMMAND (input):
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "EDGE" --part 6009 \
+        --concern "check engine light misfire rough running coolant intrusion"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Engine Long Block Replacement
+      UNIFIED DIAGNOSIS: check engine light, misfires, rough running, overheating / coolant intrusion
+      SUGGESTED CORRECTION: replace the engine long block assembly with necessary gaskets, seals, and fluids
+      LABOR (median) : 15.2 hrs
+      COST  (median) : $4571.79   (IQR $4120.55-$5062.25)
+      TYPICAL PARTS  : Engine long block assembly, engine oil, coolant, and associated gaskets/seals
+      CONFIDENCE     : 0.888  | from 3260 historical claims
+
+--------------------------------------------------------------------------------
+EXAMPLE 11  (OFFLINE - NO CLOUD) - F-150 transmission assembly repair
+--------------------------------------------------------------------------------
+COMMAND (input):
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "F-150" --part 7H351 \
+        --concern "harsh engagement slipping transmission complete failure to shift"
+
+OUTPUT (observed; reads data/sample/, single candidate -> no LLM call needed):
+    MATCHED CANONICAL REPAIR  (dealer dropdown selection)
+      match confidence: 1.0  | why: only one canonical repair for this vehicle+part
+      REPAIR        : Transmission Assembly Replacement
+      UNIFIED DIAGNOSIS: severe slipping, harsh engagement, or failure to shift
+      SUGGESTED CORRECTION: replace the complete transmission assembly and perform adaptive learning
+      LABOR (median) : 21.1 hrs
+      COST  (median) : $3719.22   (IQR $3044.41-$4820.70)
+      TYPICAL PARTS  : Transmission assembly (7A100), transmission fluid, cooler lines
+      CONFIDENCE     : 0.665  | from 2490 historical claims
+
+================================================================================
+ERROR HANDLING & EDGE CASES (video segment E - reliability)
+These show how the system reacts to unexpected inputs, API timeouts/LLM failures, and
+LLM over-splitting. All four run OFFLINE (CRP_USE_SAMPLE=1 / no cloud).
+================================================================================
+
+--------------------------------------------------------------------------------
+EXAMPLE 12  (EDGE - UNEXPECTED INPUT) - no canonical repair -> manual-review fallback
+--------------------------------------------------------------------------------
+COMMAND (input):  (also reproducible in the dashboard Claim Assistant: pick a part with no repair)
+    CRP_USE_SAMPLE=1 python cli.py infer --vehicle "F-150" --part 9999 \
+        --concern "unidentified intermittent rattle"
+
+OUTPUT (observed): the agent does not guess; it routes the claim to manual review:
+    INCOMING CLAIM -> vehicle~'F-150' part=9999
+      "unidentified intermittent rattle"
+    ======================================================================
+    RESULT: NO_MATCH
+      No canonical repair exists for this vehicle+causal part yet (claim would be
+      routed to manual review / new-signature creation).
+
+--------------------------------------------------------------------------------
+EXAMPLE 13  (EDGE - UNKNOWN REGION) - RegionIndexTool degrades to a neutral 1.0x index
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python3 -c "from src.tools import RegionIndexTool; t=RegionIndexTool(); \
+        print('CA', t.index_for('CA'), '| ZZ', t.index_for('ZZ'))"
+
+OUTPUT (observed): a known state localizes; an unknown/missing state falls back, no crash:
+    CA 1.1268 | ZZ 1.0
+    (an unknown dealer state -> neutral 1.0x -> the national cost is returned unchanged;
+     `python cli.py run --signature 32954 --state ZZ` behaves the same way.)
+
+--------------------------------------------------------------------------------
+EXAMPLE 14  (EDGE - API TIMEOUT / TRANSIENT FAILURE) - retry-with-backoff + graceful error
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python -m pytest tests/test_vertex_gemini_tool.py -q
+
+OUTPUT (observed): 7 passed - these tests drive the exact live fallback behavior of VertexGeminiTool:
+    - transient 429/5xx/timeout/401  -> retry with backoff, then succeed
+    - malformed (non-JSON) response   -> reported as {_ok: False, error}, not retried forever
+    - fatal 400                       -> fast-fail (not retried)
+    - retries exhausted               -> graceful {_ok: False, error}; generate_text -> "[LLM_ERROR] ..."
+    (Live, the agent therefore never crashes the pipeline on an API hiccup; a stuck call is
+     killed by the 60s timeout and a failed group falls back to a single-repair shell.)
+
+--------------------------------------------------------------------------------
+EXAMPLE 15  (EDGE - LLM OVER-SPLIT / HALLUCINATION) - deterministic separation guard
+--------------------------------------------------------------------------------
+COMMAND (input):
+    python -m pytest tests/test_solution_assembly.py -q
+
+OUTPUT (observed): 5 passed - the SolutionAssemblyAgent's validation loop protects against the LLM
+proposing a split that the data does not support:
+    - a proposed 2-way split is honored ONLY if the high cost tier is >= 1.5x the low tier
+    - otherwise it collapses to ONE repair, with split_rationale "... were not separated ..."
+    (So the agent never reports two repairs that are really one repair with normal price variation.)
+
+--------------------------------------------------------------------------------
+NOTES
+--------------------------------------------------------------------------------
+* Offline (EXAMPLE 0, EXAMPLES 7-11, and EXAMPLES 12-15): set CRP_USE_SAMPLE=1 - no credentials/network.
+* Live (EXAMPLES 1-6): `gcloud auth login` first (Ford CAA needs interactive user creds; the tools
+  auto-refresh the token).
+* Numeric fields (labor/cost bands, consensus, savings, region index) are deterministic from the data
+  (StatsTool / RegionIndexTool); only diagnosis/correction/name prose is LLM-generated.
